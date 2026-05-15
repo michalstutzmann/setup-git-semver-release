@@ -1,0 +1,78 @@
+---
+name: 'Setup Git SemVer Release'
+description: 'Calculate, tag, and push Semantic Versioning releases from Git
+  history, with support for conventional commits and pre-release channels'
+branding:
+  icon: 'tag'
+  color: 'blue'
+inputs:
+  command:
+    description: 'Subcommand to run: version, major, minor, patch, conventional, or
+      release-tag'
+    required: false
+    default: 'version'
+  push:
+    description: 'Push the created tag to the origin remote (only applies to major,
+      minor, patch, conventional)'
+    required: false
+    default: 'false'
+  channel:
+    description: 'Pre-release channel suffix to append to the tag (e.g. alpha, beta, rc)'
+    required: false
+    default: ''
+  message:
+    description: 'Annotation message for the created tag. Supports $version placeholder.'
+    required: false
+    default: ''
+  version:
+    description: 'Release tag of michalstutzmann/git-semver-release to install (e.g. v1.0.0), or "latest"'
+    required: false
+    default: 'latest'
+outputs:
+  version:
+    description: 'The calculated version'
+    value: ${{ steps.git-semver-release.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Run Git SemVer Release
+      id: git-semver-release
+      shell: bash
+      env:
+        INPUT_COMMAND: ${{ inputs.command }}
+        INPUT_PUSH: ${{ inputs.push }}
+        INPUT_CHANNEL: ${{ inputs.channel }}
+        INPUT_MESSAGE: ${{ inputs.message }}
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+
+        install_dir="$RUNNER_TEMP/git-semver-release"
+        mkdir -p "$install_dir"
+
+        if [ "$INPUT_VERSION" = "latest" ]; then
+          url="https://github.com/michalstutzmann/git-semver-release/releases/latest/download/git-semver-release"
+        else
+          url="https://github.com/michalstutzmann/git-semver-release/releases/download/${INPUT_VERSION}/git-semver-release"
+        fi
+
+        curl -fsSL "$url" -o "$install_dir/git-semver-release"
+        chmod +x "$install_dir/git-semver-release"
+        printf '%s\n' "$install_dir" >> "$GITHUB_PATH"
+
+        args=("$INPUT_COMMAND")
+
+        if [ "$INPUT_PUSH" = "true" ]; then
+          args+=("--push")
+        fi
+
+        if [ -n "$INPUT_CHANNEL" ]; then
+          args+=("--channel" "$INPUT_CHANNEL")
+        fi
+
+        if [ -n "$INPUT_MESSAGE" ]; then
+          args+=("$INPUT_MESSAGE")
+        fi
+
+        version=$("$install_dir/git-semver-release" "${args[@]}")
+        printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"

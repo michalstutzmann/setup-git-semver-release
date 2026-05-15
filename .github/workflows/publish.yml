@@ -1,0 +1,28 @@
+---
+name: Publish
+on:
+  push:
+    tags:
+      - '**'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.ref }}
+      - name: Install git-semver-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --repo michalstutzmann/git-semver-release \
+            --pattern git-semver-release --output /usr/local/bin/git-semver-release
+          chmod +x /usr/local/bin/git-semver-release
+      - name: Run publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./publish
