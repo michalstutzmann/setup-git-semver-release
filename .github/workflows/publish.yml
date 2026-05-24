@@ -19,7 +19,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download --repo michalstutzmann/git-semver-release \
+          gh release download v2.0.0 --repo michalstutzmann/git-semver-release \
             --pattern git-semver-release --output /usr/local/bin/git-semver-release
           chmod +x /usr/local/bin/git-semver-release
       - name: Run publish

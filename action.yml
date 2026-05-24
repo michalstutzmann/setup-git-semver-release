@@ -27,7 +27,7 @@ inputs:
   version:
     description: 'Release tag of michalstutzmann/git-semver-release to install (e.g. v1.0.0), or "latest"'
     required: false
-    default: 'latest'
+    default: 'v2.0.0'
 outputs:
   version:
     description: 'The calculated version'
