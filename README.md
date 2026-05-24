@@ -14,7 +14,7 @@ The action downloads the `git-semver-release` script from the [`michalstutzmann/
     ref: ${{ github.ref }}
 
 - id: semver
-  uses: michalstutzmann/setup-git-semver-release@v1
+  uses: michalstutzmann/setup-git-semver-release@v2
 
 - run: echo "Version is ${{ steps.semver.outputs.version }}"
 ```
@@ -71,7 +71,7 @@ pre_release_format=$channel$separator$commit_short_sha
     fetch-tags: true
     ref: ${{ github.ref }}
 - id: semver
-  uses: michalstutzmann/setup-git-semver-release@v1
+  uses: michalstutzmann/setup-git-semver-release@v2
 - run: echo "${{ steps.semver.outputs.version }}"
 ```
 
@@ -94,7 +94,7 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
           ref: ${{ github.ref }}
-      - uses: michalstutzmann/setup-git-semver-release@v1
+      - uses: michalstutzmann/setup-git-semver-release@v2
         with:
           command: conventional
           push: 'true'
@@ -107,7 +107,7 @@ jobs:
 ### Bump a specific level with a custom annotation
 
 ```yaml
-- uses: michalstutzmann/setup-git-semver-release@v1
+- uses: michalstutzmann/setup-git-semver-release@v2
   with:
     command: minor
     message: 'Release $version'
@@ -117,7 +117,7 @@ jobs:
 ### Pre-release channel
 
 ```yaml
-- uses: michalstutzmann/setup-git-semver-release@v1
+- uses: michalstutzmann/setup-git-semver-release@v2
   with:
     command: patch
     channel: rc
@@ -129,7 +129,7 @@ Produces a tag like `v1.2.4-rc`.
 ### Pin to a specific `git-semver-release` version
 
 ```yaml
-- uses: michalstutzmann/setup-git-semver-release@v1
+- uses: michalstutzmann/setup-git-semver-release@v2
   with:
     version: 'v2.0.0'
 ```
