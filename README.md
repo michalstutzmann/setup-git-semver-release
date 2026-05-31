@@ -39,7 +39,7 @@ The `actions/checkout` settings matter:
 
 | Name      | Description                                                                                                                                                                                                          |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `version` | The calculated version, without the tag prefix. On a clean release-tagged commit this is a plain `1.2.3`; if the working tree is dirty on a release-tagged commit, the patch level is bumped and the dirty indicator (default `dirty`) is appended via `$dirty_indicator`; on commits after a tag it carries the pre-release suffix, e.g. `1.2.4-alpha.5.ab12cd3` (channel, number of commits since the tag, and short SHA, per the default `pre_release_format`). |
+| `version` | The calculated version, without the tag prefix. On a clean release-tagged commit this is a plain `1.2.3`; if the working tree is dirty on a release-tagged commit, the patch level is bumped and the dirty indicator (default `dirty`) is appended via `$dirty_indicator`; on commits after a tag it carries the pre-release suffix, e.g. `1.2.4-main.5.ab12cd3` (channel — the current branch by default — number of commits since the tag, and short SHA, per the default `pre_release_format`). |
 
 ## Configuration
 
@@ -48,7 +48,7 @@ The `actions/checkout` settings matter:
 | Key                  | Default                                                                                 | Description                                                                                                                                                  |
 | -------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `tag_prefix`         | `v`                                                                                     | Prefix for created and matched tags (e.g. `v1.2.3`). Set to empty for unprefixed tags.                                                                        |
-| `channel`            | `alpha`                                                                                 | Default pre-release channel used when the `channel` input is not given.                                                                                       |
+| `channel`            | _current branch_                                                                        | Default pre-release channel. When neither the `channel` input nor this key is set, the current Git branch name is used.                                        |
 | `dirty_indicator`    | `dirty`                                                                                 | Token substituted for `$dirty_indicator` when the working tree has uncommitted changes.                                                                       |
 | `pre_release_format` | `$channel$separator$commit_count$separator$commit_short_sha$separator$dirty_indicator` | Template for the pre-release suffix. Placeholders: `$channel`, `$branch`, `$commit_count`, `$commit_short_sha`, `$dirty_indicator`, and `$separator` (`.`).    |
 
