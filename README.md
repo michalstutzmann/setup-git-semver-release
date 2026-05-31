@@ -33,7 +33,7 @@ The `actions/checkout` settings matter:
 | `push`    | `false`                                       | Push the created tag to `origin`. Only applies to `major`, `minor`, `patch`, and `conventional`.             |
 | `channel` | `''`                                          | Pre-release channel suffix to append to the tag (e.g. `alpha`, `beta`, `rc`).                                |
 | `message` | `''`                                          | Annotation message for the created tag. Supports the `$version` placeholder.                                 |
-| `version` | `v2.0.0`                                      | Release tag of [`michalstutzmann/git-semver-release`](https://github.com/michalstutzmann/git-semver-release/releases) to install (e.g. `v2.0.0`), or `latest`. This selects which build of the tool to download — it is unrelated to the `version` command and the `version` output. |
+| `version` | `v2.0.1`                                      | Release tag of [`michalstutzmann/git-semver-release`](https://github.com/michalstutzmann/git-semver-release/releases) to install (e.g. `v2.0.1`), or `latest`. This selects which build of the tool to download — it is unrelated to the `version` command and the `version` output. |
 
 ## Outputs
 
@@ -131,5 +131,5 @@ Produces a tag like `v1.2.4-rc`.
 ```yaml
 - uses: michalstutzmann/setup-git-semver-release@v2
   with:
-    version: 'v2.0.0'
+    version: 'v2.0.1'
 ```
