@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 is_detached_head() {
-    ! git symbolic-ref --quiet HEAD >/dev/null || return 1
+    ! git symbolic-ref --quiet HEAD >/dev/null
 }
 
 create_github_release() {
