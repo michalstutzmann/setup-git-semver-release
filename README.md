@@ -134,39 +134,6 @@ Produces a tag like `v1.2.4-rc`.
     version: 'v2.0.1'
 ```
 
-## Development
+## Contributing
 
-This section is for anyone changing this repository — human contributors and AI coding agents alike. `AGENTS.md` is a symlink to this file.
-
-### Repository layout
-
-| Path                            | Purpose                                                                                                                                                       |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action.yml`                    | Action metadata and the composite action implementation: downloads the `git-semver-release` script, adds it to `PATH`, runs it, and writes the `version` output. |
-| `publish`                       | Bash helper that creates a GitHub release for the current release tag (see below). Used by this repo's own release workflow; not part of the action.          |
-| `.github/workflows/publish.yml` | Runs `publish` on every tag push to create the matching GitHub release.                                                                                        |
-
-### Release process
-
-Releases of this action are cut by pushing a SemVer tag (e.g. `v2.0.1`). The `Publish` workflow then installs `git-semver-release` and runs `./publish`, which:
-
-1. Requires `gh` to be installed and authenticated (`GH_TOKEN`).
-2. Reads the version (`git-semver-release version`) and the release tag of `HEAD` (`git-semver-release release-tag`).
-3. If `HEAD` is detached and points at a release tag, creates a GitHub release titled with the version and using the tag annotation as notes. An existing release for the tag is left untouched.
-
-Exit codes: `1` — `gh` missing, `2` — `gh` not authenticated, `3` — version lookup failed, `4` — release-tag lookup failed, `5` — release creation failed.
-
-### Guidelines
-
-- Keep changes small and focused.
-- This repo wraps the behavior implemented in [`michalstutzmann/git-semver-release`](https://github.com/michalstutzmann/git-semver-release); do not document behavior here that this action does not actually expose.
-- Keep `action.yml` inputs and outputs in sync with the [Inputs](#inputs) and [Outputs](#outputs) tables and the examples above.
-- When changing the default installed `git-semver-release` version, also update the `version` input default in the README, the pinned version in `.github/workflows/publish.yml`, and any documentation that depends on the tool's behavior.
-- Shell: Bash is fine (the existing scripts use it); prefer POSIX-compatible patterns where practical, quote variables, and preserve `set -euo pipefail` where it is already used.
-
-### Validation
-
-Before finishing a change, run the checks relevant to the files you touched:
-
-- Shell changes: `bash -n publish`.
-- `action.yml` changes: confirm it is valid YAML and that the README inputs, outputs, and examples still match it.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development and contribution guidelines.
