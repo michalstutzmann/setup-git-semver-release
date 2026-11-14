@@ -17,7 +17,9 @@ inputs:
     required: false
     default: 'false'
   channel:
-    description: 'Pre-release channel suffix to append to the tag (e.g. alpha, beta, rc)'
+    description: 'Pre-release channel for the version command (e.g. alpha, beta, rc);
+      defaults to the channel config key, then the current branch. Release
+      commands always create stable tags'
     required: false
     default: ''
   message:

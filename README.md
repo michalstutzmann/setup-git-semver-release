@@ -31,7 +31,7 @@ The `actions/checkout` settings matter:
 | --------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `command` | `version`                                     | Subcommand to run: `version`, `major`, `minor`, `patch`, `conventional`, or `release-tag`.                   |
 | `push`    | `false`                                       | Push the created tag to `origin`. Only applies to `major`, `minor`, `patch`, and `conventional`.             |
-| `channel` | `''`                                          | Pre-release channel suffix to append to the tag (e.g. `alpha`, `beta`, `rc`).                                |
+| `channel` | `''`                                          | Pre-release channel used in the `version` command's pre-release suffix (e.g. `alpha`, `beta`, `rc`). Defaults to the `channel` config key, then the current branch. Ignored by `major`, `minor`, `patch`, and `conventional`, which always create stable tags such as `v1.2.4`. |
 | `message` | `''`                                          | Annotation message for the created tag. Supports the `$version` placeholder.                                 |
 | `version` | `v2.1.0`                                      | Release tag of [`michalstutzmann/git-semver-release`](https://github.com/michalstutzmann/git-semver-release/releases) to install (e.g. `v2.1.0`), or `latest`. This selects which build of the tool to download — it is unrelated to the `version` command and the `version` output. |
 
@@ -117,14 +117,14 @@ jobs:
 ### Pre-release channel
 
 ```yaml
-- uses: michalstutzmann/setup-git-semver-release@v2.1.0
+- id: semver
+  uses: michalstutzmann/setup-git-semver-release@v2.1.0
   with:
-    command: patch
     channel: rc
-    push: 'true'
+- run: echo "${{ steps.semver.outputs.version }}"
 ```
 
-Produces a tag like `v1.2.4-rc`.
+On commits after the latest release this prints a version like `1.2.4-rc.5.ab12cd3` instead of `1.2.4-main.5.ab12cd3`. The channel only shapes the `version` output; it is not added to tags created by `major`, `minor`, `patch`, or `conventional`.
 
 ### Pin to a specific `git-semver-release` version
 
