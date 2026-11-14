@@ -21,7 +21,7 @@ The action downloads the `git-semver-release` script from the [`michalstutzmann/
 
 The `actions/checkout` settings matter:
 
-- **`fetch-depth: 0`** is required — the tool derives the version from prior tags and full commit history (`git describe`, `git rev-list`), so the default shallow clone would break version calculation.
+- **`fetch-depth: 0`** is required — the tool derives the version from prior tags and full commit history (`git describe`, `git rev-list`), so the default shallow clone would break version calculation. In a shallow clone with no reachable release tag, `version` prints a warning and the release commands (`major`, `minor`, `patch`, `conventional`) fail instead of restarting from `0.1.0`.
 - **`fetch-tags: true`** ensures release tags are present so the tool can find the latest release. With `fetch-depth: 0` tags are already fetched, so this is belt-and-suspenders; keep it if you ever lower the fetch depth.
 - **`ref: ${{ github.ref }}`** checks out the branch rather than a detached `HEAD`. This is required when `push: true`, because the tool runs `git push origin HEAD` — from a detached `HEAD` that has no branch to push to and fails. It is harmless for read-only `version` use.
 
@@ -32,8 +32,8 @@ The `actions/checkout` settings matter:
 | `command` | `version`                                     | Subcommand to run: `version`, `major`, `minor`, `patch`, `conventional`, or `release-tag`.                   |
 | `push`    | `false`                                       | Push the created tag to `origin`. Only applies to `major`, `minor`, `patch`, and `conventional`.             |
 | `channel` | `''`                                          | Pre-release channel used in the `version` command's pre-release suffix (e.g. `alpha`, `beta`, `rc`). Defaults to the `channel` config key, then the current branch. Ignored by `major`, `minor`, `patch`, and `conventional`, which always create stable tags such as `v1.2.4`. |
-| `message` | `''`                                          | Annotation message for the created tag. Supports the `$version` placeholder.                                 |
-| `version` | `v2.1.0`                                      | Release tag of [`michalstutzmann/git-semver-release`](https://github.com/michalstutzmann/git-semver-release/releases) to install (e.g. `v2.1.0`), or `latest`. This selects which build of the tool to download — it is unrelated to the `version` command and the `version` output. |
+| `message` | `''`                                          | Annotation message for the created tag. Supports the `$version` placeholder. Only valid with `major`, `minor`, `patch`, and `conventional`; setting it with `version` or `release-tag` fails the step. |
+| `version` | `v3.0.0`                                      | Release tag of [`michalstutzmann/git-semver-release`](https://github.com/michalstutzmann/git-semver-release/releases) to install (e.g. `v3.0.0`), or `latest`. This selects which build of the tool to download — it is unrelated to the `version` command and the `version` output. |
 
 ## Outputs
 
@@ -43,7 +43,7 @@ The `actions/checkout` settings matter:
 
 ## Configuration
 
-`git-semver-release` reads an optional `.git-semver-release.properties` file from the repository root. Because the action runs the tool inside your checkout, this file is respected — it is the way to customize the tag prefix and the pre-release version format. Recognized keys:
+`git-semver-release` reads an optional `.git-semver-release.properties` file from the repository root. Because the action runs the tool inside your checkout, this file is respected — it is the way to customize the tag prefix and the pre-release version format. It holds one `key=value` pair per line; blank lines and lines starting with `#` are ignored. Recognized keys:
 
 | Key                  | Default                                                                                 | Description                                                                                                                                                  |
 | -------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -102,7 +102,7 @@ jobs:
 
 `permissions: contents: write` lets the workflow's `GITHUB_TOKEN` push tags back to the repo.
 
-> **Note:** `conventional` exits non-zero — failing the step — when there are no releasable commits since the last release (no `feat:`, `fix:`, `perf:`, or breaking-change commits). On a branch where most pushes have nothing to release, add `continue-on-error: true` to the step or gate it on the commit history so the workflow does not fail on every no-op push.
+> **Note:** `conventional` exits with code `9` — failing the step — when there are no releasable commits since the last release (no `feat:`, `fix:`, `perf:`, or breaking-change commits). On a branch where most pushes have nothing to release, add `continue-on-error: true` to the step or gate it on the commit history so the workflow does not fail on every no-op push.
 
 ### Bump a specific level with a custom annotation
 
@@ -131,7 +131,7 @@ On commits after the latest release this prints a version like `1.2.4-rc.5.ab12c
 ```yaml
 - uses: michalstutzmann/setup-git-semver-release@v2.1.0
   with:
-    version: 'v2.1.0'
+    version: 'v3.0.0'
 ```
 
 ## Contributing
